@@ -37,29 +37,42 @@ public class APIController {
 	 	@GetMapping
 	 	@Produces("application/pdf")
 	    public ResponseEntity downloadFileWithGet() throws IOException {
-	 		List<Employee> employees =  apiService.getData();
+	 		List<Employee> employees =  apiService.getData(); //this is coming from your database after mapping 
+	 		
+	 		//create excel sheet 
 	 		XSSFWorkbook workbook = new XSSFWorkbook(); 
 	 		XSSFSheet sheet = workbook.createSheet("sheet1");// creating a blank sheet
 	 		 int rownum = 0;
+	 		 //set data from database list into excel
+	 		Row row1 = sheet.createRow(rownum++);
+	 		createHeader(row1);
 	         for (Employee user : employees)
 	            {
 	            Row row = sheet.createRow(rownum++);
+	            
 	            createList(user, row);
 	                
 	        }    
+	         //write to output stream
 	         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	         workbook.write(bos);
-	         //workbook.write(out);
 	         byte[] barray = bos.toByteArray();
 	         InputStream is = new ByteArrayInputStream(barray);
-	           InputStreamResource inputStreamResource = new InputStreamResource(is);
-	           bos.close();
+	         InputStreamResource inputStreamResource = new InputStreamResource(is);
+	         bos.close();
+	         //this return statement should be part of controller.
 	 		return ResponseEntity.ok()
 	 				.contentType(MediaType.MULTIPART_FORM_DATA)
-	 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "x1.xlsx" + "\"")
+	 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "totalcount.xlsx" + "\"")
 	 				.body(inputStreamResource);
 	    }
 	 	
+	 	private static void createHeader(Row row) {
+	 		Cell cell = row.createCell(0);
+ 	        cell.setCellValue("employee Id");
+ 	        cell = row.createCell(1);
+ 	        cell.setCellValue("employee name");
+	 	}
 	 	 private static void createList(Employee user, Row row) // creating cells for each row
 	 	{
 	 	        Cell cell = row.createCell(0);

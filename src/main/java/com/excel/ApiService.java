@@ -15,6 +15,10 @@ public class ApiService {
 		emp.setEmployeeId(1);
 		emp.setEmployeeName("rishu");
 		emps.add(emp);
+		Employee emp1 = new Employee();
+		emp1.setEmployeeId(1);
+		emp1.setEmployeeName("sangavi");
+		emps.add(emp1);
 		return emps;
 	}
 
